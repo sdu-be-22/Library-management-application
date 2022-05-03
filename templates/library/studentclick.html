@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-  <head>
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -11,30 +11,84 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
     <style media="screen">
-    .jumbotron{
-      margin-bottom: 0px;
-    }
-    .jumbotron h1{
-      text-align: center;
-    }
+
+        .typewriter {
+            width: max-content;
+            font-family: monospace;
+            overflow: hidden; /* Ensures the content is not revealed until the animation */
+            border-right: .15em solid orange; /* The typwriter cursor */
+            white-space: nowrap; /* Keeps the content on a single line */
+            margin: 0 auto; /* Gives that scrolling effect as the typing happens */
+            letter-spacing: .15em; /* Adjust as needed */
+            animation: typing 3.5s steps(30, end),
+            blink-caret .5s step-end infinite;
+        }
+
+
+        /* The typing effect */
+        @keyframes typing {
+            from {
+                width: 0
+            }
+            to {
+                width: 400px;
+            }
+        }
+
+        /* The typewriter cursor effect */
+        @keyframes blink-caret {
+            from, to {
+                border-color: transparent
+            }
+            50% {
+                border-color: #373534
+            }
+        }
+
+        .jumbotron {
+            margin-bottom: 0px;
+        }
+
+        .jumbotron h1 {
+            text-align: center;
+        }
+
+        p {
+            max-width: 45%;
+            margin: 0 auto;
+        }
+
+
     </style>
 
-  </head>
-  <body>
-      {% include "library/navbar.html" %}
-<br><br>
-      <div class="jumbotron">
-        <h1 class="display-4">Hello, Student</h1>
-        <p class="lead">Welcome to Online Library Management System.</p>
-        <hr class="my-4">
-        <p>You can access various features after Login.</p>
-        <p class="lead">
-          <a class="btn btn-primary btn-lg" href="studentsignup" role="button">SignUp</a>
-          <a class="btn btn-primary btn-lg" href="studentlogin" role="button">Login</a>
-        </p>
-      </div>
+</head>
+<body>
+<div class="flex1">
+    <div class="row1">
+        {% include "library/navbar.html" %}
+        {% include "library/utils.html" %}
+        <br><br>
+        <div class="jumbotron">
+            <h1 class="typewriter">Hello, Student</h1>
+            <p class="lead"><br>Welcome to Online Library Management System. <br><br> <span class="underline--magical">Library Management System</span>
+                is
+                designed to
+                manage all the functions of a library. It helps librarian to maintain the database of new books and the
+                books that are borrowed by members along with their due dates. This system completely automates all your
+                library's activities.</p>
+            <hr class="my-4">
+            <p>You can access various features after Login.</p>
+            <p class="lead">
+                <br>
+                <a style="margin-right: 2em;" class="dark-btn" href="studentsignup" role="button">Sign Up</a>
+                <a class="dark-btn" href="studentlogin" role="button">Login</a>
+            </p>
+        </div>
 
-
-      {% include "library/footer.html" %}
-  </body>
+    </div>
+    <div class="row1">
+        {% include "library/footer.html" %}
+    </div>
+</div>
+</body>
 </html>

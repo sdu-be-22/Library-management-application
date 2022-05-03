@@ -21,6 +21,7 @@ from django.contrib.auth.views import LoginView,LogoutView
 
 
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/',include('django.contrib.auth.urls') ),
@@ -41,9 +42,12 @@ urlpatterns = [
     path('addbook', views.addbook_view),
     path('viewbook', views.viewbook_view),
     path('issuebook', views.issuebook_view),
+    path('removebook', views.remove_book),
     path('viewissuedbook', views.viewissuedbook_view),
     path('viewstudent', views.viewstudent_view),
+    path('viewbookbystudent', views.viewbookbystudent_view),
     path('viewissuedbookbystudent', views.viewissuedbookbystudent),
+    path('requestbook', views.requestbook),
 
     path('aboutus', views.aboutus_view),
     path('contactus', views.contactus_view),

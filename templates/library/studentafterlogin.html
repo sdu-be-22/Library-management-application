@@ -1,55 +1,69 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-  <head>
-<style media="screen">
-.btn-circle.btn-xl {
-  width: 70px;
-  height: 70px;
-  padding: 10px 16px;
-  border-radius: 35px;
-  font-size: 24px;
-  line-height: 1.33;
-}
+<head>
+    <style media="screen">
+        .btn-circle.btn-xl {
+            width: 70px;
+            height: 70px;
+            padding: 10px 16px;
+            border-radius: 35px;
+            font-size: 24px;
+            line-height: 1.33;
+        }
 
-.btn-circle {
-  width: 30px;
-  height: 30px;
-  padding: 6px 0px;
-  border-radius: 15px;
-  text-align: center;
-  font-size: 12px;
-  line-height: 1.42857;
-}
+        .btn-circle {
+            width: 30px;
+            height: 30px;
+            padding: 6px 0px;
+            border-radius: 15px;
+            text-align: center;
+            font-size: 12px;
+            line-height: 1.42857;
+        }
 
-.jumbotron{
-  margin-top: 0px;
-  margin-bottom: 0px;
-}
-.jumbotron h1{
-  text-align: center;
-}
+        .jumbotron {
+            margin-top: 0px;
+            margin-bottom: 0px;
+        }
+
+        .jumbotron h1 {
+            text-align: center;
+        }
 
 
-</style>
-  </head>
-  <body>
-    {% include "library/navbarstudent.html" %}
-    <br>
-    <br>
-    <center><h3 style=" margin-bottom: 0px;"class = 'alert alert-success'>Welcome to Online library !</h3></center>
-    <div class="jumbotron"   style="    margin-bottom: 0px;">
-    <h1 class="display-4">Hello {{user.first_name}} !</h1>
-    <p class="lead">As you are Student, you can see how many book you have taken from library with fine and many more ...!
-    </p>
-    <hr class="my-4">
-    <p>Option Available For You</p>
-    <div class="options" style="text-align:center">
-      <a href="viewissuedbookbystudent" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">View issued book to you</a><br><br>
+    </style>
+</head>
+<body>
+<div class="flex1">
+    <div class="row1">
+        {% include "library/navbarstudent.html" %}
+        {% include "library/utils.html" %}
+        <br>
+        <br>
+        <div class="jumbotron" style="    margin-bottom: 0px;">
+            <br>
+            <h1 class="display-4">Hello {{user.first_name}}!</h1>
+            <p class="lead">As you are Student, you can see how many book you have taken from library with fine and many
+                more!
+            </p>
+            <hr class="my-4">
+            <br>
+            <div class="options alhor" style="margin: 0 auto;max-width: min-content; white-space: nowrap">
+                <a style="padding: 0.7em; display: flex; flex-direction: column; min-width: 100%" href="viewissuedbookbystudent" class="dark-btn" role="button" aria-pressed="true">
+                    <div><img  class="btn-img" src="./static/images/viewissued.svg" alt="">
+                        View issued books</div></a><br><br>
+                <a style="padding: 0.7em; display: flex; flex-direction: column; min-width: 100%" href="viewbookbystudent" class="dark-btn" role="button" aria-pressed="true">
+                    <div><img  class="btn-img" src="./static/images/addbook.svg" alt="">
+                    View all books</div></a><br><br>
+            </div>
+
         </div>
-
     </div>
 
+    <div class="row1">
+        {% include "library/footer.html" %}
+    </div>
 
-    {% include "library/footer.html" %}
-  </body>
+</div>
+</body>
 </html>

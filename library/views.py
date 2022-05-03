@@ -3,8 +3,10 @@ from datetime import date
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import Group
 from django.core.mail import send_mail
+# from django.core.serializers import json
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
+import simplejson as json
 
 from librarymanagement.settings import EMAIL_HOST_USER
 from . import forms, models
@@ -16,12 +18,10 @@ def home_view(request):
     return render(request, 'library/index.html')
 
 
-
 def studentclick_view(request):
     if request.user.is_authenticated:
         return HttpResponseRedirect('afterlogin')
     return render(request, 'library/studentclick.html')
-
 
 
 def adminclick_view(request):
@@ -70,6 +70,7 @@ def studentsignup_view(request):
         return HttpResponseRedirect('studentlogin')
     return render(request, 'library/studentsignup.html', context=mydict)
 
+
 def is_admin(user):
     return user.groups.filter(name='ADMIN').exists()
 
@@ -84,10 +85,9 @@ def afterlogin_view(request):
 @login_required(login_url='adminlogin')
 @user_passes_test(is_admin)
 def addbook_view(request):
-    
     form = forms.BookForm()
     if request.method == 'POST':
-        
+
         form = forms.BookForm(request.POST)
         if form.is_valid():
             form.save()
@@ -102,20 +102,41 @@ def viewbook_view(request):
     return render(request, 'library/viewbook.html', {'books': books})
 
 
+@login_required(login_url='studentlogin')
+def viewbookbystudent_view(request):
+    books = models.Book.objects.all()
+    # print(request.user.id)
+    # print(request.user.username)
+    # print(models.StudentExtra.objects.all().values())
+
+    # requested_isbns = models.StudentExtra.objects.get(id=request.user.id).requests
+    # requested_books = models.Book.objects.all()
+    # for b in requested_isbns:
+    #     books = books.exclude(isbn=b)
+    # # print(requested_isbns)
+    # print(books)
+    # requested_books = requested_books.difference(books)
+    return render(request, 'library/viewbookbystudent.html', {'books': books})
+
+
 @login_required(login_url='adminlogin')
 @user_passes_test(is_admin)
 def issuebook_view(request):
     form = forms.IssuedBookForm()
+    f = []
+    for e in models.IssuedBook.objects.all().values():
+        f.append(e['isbn'])
+    print("SSSSSSSSSSSSSSSs")
+    print(f)
     if request.method == 'POST':
-        
-        form = forms.IssuedBookForm(request.POST)
-        if form.is_valid():
+        if True:
             obj = models.IssuedBook()
             obj.enrollment = request.POST.get('enrollment2')
             obj.isbn = request.POST.get('isbn2')
             obj.save()
             return render(request, 'library/bookissued.html')
-    return render(request, 'library/issuebook.html', {'form': form})
+
+    return render(request, 'library/issuebook.html', {'form': form, 'list': f})
 
 
 @login_required(login_url='adminlogin')
@@ -134,7 +155,9 @@ def viewissuedbook_view(request):
 
         b = list(models.Book.objects.filter(isbn=ib.isbn))
         std = list(models.StudentExtra.objects.filter(enrollment=ib.enrollment))
-        li.append((std[0].get_name, std[0].enrollment, b[0].name, b[0].author, issdate, expdate, f))
+        print(std)
+
+        li.append((std[0].get_name, b[0].isbn, b[0].name, b[0].author, issdate, expdate, f))
 
     return render(request, 'library/viewissuedbook.html', {'li': li})
 
@@ -194,4 +217,13 @@ def contactus_view(request):
     return render(request, 'library/contactus.html', {'form': sub})
 
 
+def remove_book(request):
+    print(request.POST.get('bookid'))
+    obj = models.IssuedBook.objects.filter(isbn=request.POST.get('bookid'))[0].delete()
+    models.IssuedBook.objects.update()
+    print(models.IssuedBook.objects.all().values())
+    return HttpResponseRedirect('viewissuedbook')
 
+
+def requestbook(request):
+    return HttpResponseRedirect('viewbooksbystudent')

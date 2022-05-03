@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <style media="screen">
+
+    </style>
+</head>
+<body>
+<div class="flex1">
+    <div class="row1">
+        {% include "library/navbaradmin.html" %}
+        {% include "library/utils.html" %}
+        <br>
+        <br>
+        <br>
+        {% if books %}
+            <table class="redTable">
+                <thead>
+                <tr>
+                    <th>Book Name</th>
+                    <th>ISBN</th>
+                    <th>Author</th>
+                    <th>Category</th>
+                    <th>Request</th>
+                </tr>
+                </thead>
+                <tfoot>
+                <tr>
+                    <td colspan="5" rowspan="4">
+                        <div class="links"></div>
+                    </td>
+                </tr>
+                </tfoot>
+                <tbody>
+                {% for book in books %}
+                    <tr>
+                        <td>{{ book.name }}</td>
+                        <td>{{ book.isbn }}</td>
+                        <td>{{ book.author }}</td>
+                        <td>{{ book.category }}</td>
+                        <td>
+                            <form action="/requestbook" method="POST">
+                                {% csrf_token %}
+
+                                <p style="display: none"><input name="bookid" id="bookid" value={{ book.isbn }}></p>
+                                <input class="dark-btn" style="padding: 0.1em 0.5em; font-size: 1em;"
+                                       value="send" type="submit">
+
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <h1>Have 0 book</h1>
+        {% endif %}
+
+        <br>
+        {% if requestedbooks %}
+            <table class="redTable">
+                <thead>
+                <tr>
+                    <th>Book Name</th>
+                    <th>ISBN</th>
+                    <th>Author</th>
+                    <th>Category</th>
+                </tr>
+                </thead>
+                <tfoot>
+                <tr>
+                    <td colspan="4" rowspan="4">
+                        <div class="links"></div>
+                    </td>
+                </tr>
+                </tfoot>
+                <tbody>
+                {% for book in requestedbooks %}
+                    <tr>
+                        <td>{{ book.name }}</td>
+                        <td>{{ book.isbn }}</td>
+                        <td>{{ book.author }}</td>
+                        <td>{{ book.category }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <h1>You have 0 requested books</h1>
+        {% endif %}
+    </div>
+    <div class="row1">
+        {% include "library/footer.html" %}
+    </div>
+</div>
+</body>
+</html>
