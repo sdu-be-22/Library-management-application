@@ -2,7 +2,13 @@
 <html lang="en" dir="ltr">
 <head>
     <style media="screen">
-
+        .title {
+            padding: 0.4em;
+            background: #3b3636;
+            margin: 0;
+            color: white;
+            text-align: center
+        }
     </style>
 </head>
 <body>
@@ -12,8 +18,8 @@
         {% include "library/utils.html" %}
         <br>
         <br>
-        <br>
-        {% if books %}
+        {% if books or taken %}
+            <h2 class="title" style="">List of books:</h2>
             <table class="redTable">
                 <thead>
                 <tr>
@@ -50,14 +56,24 @@
                         </td>
                     </tr>
                 {% endfor %}
+                {% for book in taken %}
+                    <tr>
+                        <td>{{ book.name }}</td>
+                        <td>{{ book.isbn }}</td>
+                        <td>{{ book.author }}</td>
+                        <td>{{ book.category }}</td>
+                        <td>already taken</td>
+                    </tr>
+                {% endfor %}
                 </tbody>
             </table>
         {% else %}
-            <h1>Have 0 book</h1>
+            <h2 class="title">There is no books to request</h2>
         {% endif %}
 
         <br>
         {% if requestedbooks %}
+            <h2 class="title">Already requested books:</h2>
             <table class="redTable">
                 <thead>
                 <tr>
@@ -65,11 +81,12 @@
                     <th>ISBN</th>
                     <th>Author</th>
                     <th>Category</th>
+                    <th>Request</th>
                 </tr>
                 </thead>
                 <tfoot>
                 <tr>
-                    <td colspan="4" rowspan="4">
+                    <td colspan="5" rowspan="4">
                         <div class="links"></div>
                     </td>
                 </tr>
@@ -81,12 +98,22 @@
                         <td>{{ book.isbn }}</td>
                         <td>{{ book.author }}</td>
                         <td>{{ book.category }}</td>
+                        <td>
+                            <form action="/viewbookbystudent" method="POST">
+                                {% csrf_token %}
+
+                                <p style="display: none"><input name="remove" id="remove" value={{ book.isbn }}></p>
+                                <input class="dark-btn" style="padding: 0.1em 0.5em; font-size: 1em;"
+                                       value="remove" type="submit">
+
+                            </form>
+                        </td>
                     </tr>
                 {% endfor %}
                 </tbody>
             </table>
         {% else %}
-            <h1>You have 0 requested books</h1>
+            <h2 class="title-zero">You didn't request any books</h2>
         {% endif %}
     </div>
     <div class="row1">

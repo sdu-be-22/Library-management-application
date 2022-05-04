@@ -36,7 +36,6 @@
         .dark-btn {
             padding: 0.15em 2em !important;
         }
-
     </style>
 
 
@@ -86,5 +85,15 @@
         {% include "library/footer.html" %}
     </div>
 </div>
+<script>
+    en = document.getElementById('id_enrollment');
+    btn = document.querySelector("button[type='submit']");
+    lbl = document.querySelector("label[for='id_enrollment']");
+    lbl = lbl.parentElement.parentElement
+    btn.addEventListener('click', e => {
+        console.log('asdasd');
+    });
+    lbl.remove();
+</script>
 </body>
 </html>

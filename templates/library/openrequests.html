@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <style media="screen">
+        .title {
+            padding: 0.4em; background: #3b3636; margin: 0; color:white;text-align: center
+        }
+    </style>
+</head>
+<body>
+
+<div class="flex1">
+    <div class="row1">
+        {% include "library/navbaradmin.html" %}
+        {% include "library/utils.html" %}
+        <br>
+        <br>
+
+        {% if r %}
+            <h2 class="title" style="">Book requests from {{ name }}:</h2>
+            <table class="redTable">
+                <thead>
+                <tr>
+                    <th>ISBN</th>
+                    <th>Book Name</th>
+                    <th>Book Author</th>
+                </tr>
+                </thead>
+                <tfoot>
+                <tr>
+                    <td colspan="7">
+                        <div class="links"></div>
+                    </td>
+                </tr>
+                </tfoot>
+                <tbody>
+                {% for t in r %}
+                    <tr>
+                        <td>{{ t.isbn }}</td>
+                        <td>{{ t.name }}</td>
+                        <td>{{ t.author }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <h1 class="title"> {{ name }} doesn't requested any books</h1>
+        {% endif %}
+    </div>
+    <div class="row1">
+        {% include "library/footer.html" %}
+
+    </div>
+</div>
+</body>
+</html>

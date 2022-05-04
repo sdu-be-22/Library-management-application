@@ -112,7 +112,9 @@
 
                 <center><h2>ADD BOOK TO LIBRARY</h2></center>
                 <br>
-
+                {% if isbn_error %}
+                    <p>The ISBN you entered {{ isbn_error }}</p>
+                {% endif %}
                 {% csrf_token %}
 
                 {% for field in form %}

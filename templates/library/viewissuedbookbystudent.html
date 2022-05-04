@@ -14,80 +14,82 @@
 <div class="flex1">
     <div class="row1">
         {% include "library/navbarstudent.html" %}<br><br>
-        {% include "library/utils.html" %}<br><br>
+        {% include "library/utils.html" %}
 
 
         <div class="row">
 
             <div class="col-lg-6" style="padding-right:0px;">
-                {% if li1%}
-                <table class="redTable">
-                    <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Enrollment</th>
-                        <th>Branch</th>
-                        <th>Book Name</th>
-                        <th>Book Author</th>
-                    </tr>
-                    </thead>
-                    <tfoot>
-                    <tr>
-                        <td colspan="5">
-                            <div class="links"></div>
-                        </td>
-                    </tr>
-                    </tfoot>
-                    <tbody>
-                    {% for t in li1 %}
-                    <tr>
-                        <td> {{t.0}}</td>
-                        <td> {{t.1}}</td>
-                        <td> {{t.2}}</td>
-                        <td> {{t.3}}</td>
-                        <td> {{t.4}}</td>
-                    </tr>
+                {% if li1 %}
+                    <br>
+                    <br>
+                    <table class="redTable">
+                        <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Enrollment</th>
+                            <th>Branch</th>
+                            <th>Book Name</th>
+                            <th>Book Author</th>
+                        </tr>
+                        </thead>
+                        <tfoot>
+                        <tr>
+                            <td colspan="5">
+                                <div class="links"></div>
+                            </td>
+                        </tr>
+                        </tfoot>
+                        <tbody>
+                        {% for t in li1 %}
+                            <tr>
+                                <td> {{ t.0 }}</td>
+                                <td> {{ t.1 }}</td>
+                                <td> {{ t.2 }}</td>
+                                <td> {{ t.3 }}</td>
+                                <td> {{ t.4 }}</td>
+                            </tr>
 
-                    {% endfor %}
-                    </tbody>
-                </table>
+                        {% endfor %}
+                        </tbody>
+                    </table>
 
-            </div>
+                    </div>
 
-            <div class="col-lg-6" style="padding-left:0px;">
+                    <div class="col-lg-6" style="padding-left:0px;">
+                    <br>
+                    <br>
+                    <table class="redTable">
+                        <thead>
+                        <tr>
+                            <th>Issue Date</th>
+                            <th>Expiry Date</th>
+                        </tr>
+                        </thead>
+                        <tfoot>
+                        <tr>
+                            <td colspan="5">
+                                <div class="links"></div>
+                            </td>
+                        </tr>
+                        </tfoot>
+                        <tbody>
+                        {% for t in li2 %}
+                            <tr>
+                                <td> {{ t.0 }}</td>
+                                <td> {{ t.1 }}</td>
+                            </tr>
 
-                <table class="redTable">
-                    <thead>
-                    <tr>
-                        <th>Issue Date</th>
-                        <th>Expiry Date</th>
-                        <th>Fine</th>
-                    </tr>
-                    </thead>
-                    <tfoot>
-                    <tr>
-                        <td colspan="5">
-                            <div class="links"></div>
-                        </td>
-                    </tr>
-                    </tfoot>
-                    <tbody>
-                    {% for t in li2 %}
-                    <tr>
-                        <td> {{t.0}}</td>
-                        <td> {{t.1}}</td>
-                        <td> {{t.2}}</td>
-                    </tr>
 
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <h1 style="width: 100vw" class="title-zero">There is no books issued to you</h1>
 
-                    {% endfor %}
-                    </tbody>
-                </table>
-                {%else%}
-                <h1> No book Issued to you</h1>
-                {%endif%}
+                {% endif %}
+                </div>
 
-            </div>
         </div>
 
 

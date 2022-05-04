@@ -43,6 +43,8 @@ urlpatterns = [
     path('viewbook', views.viewbook_view),
     path('issuebook', views.issuebook_view),
     path('removebook', views.remove_book),
+    path('studentrequest', views.student_request),
+    path('openstudentrequest', views.open_std_req),
     path('viewissuedbook', views.viewissuedbook_view),
     path('viewstudent', views.viewstudent_view),
     path('viewbookbystudent', views.viewbookbystudent_view),

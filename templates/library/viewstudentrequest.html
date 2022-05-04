@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
+    <meta charset="utf-8">
+    <title></title>
+
     <style media="screen">
 
     </style>
@@ -12,51 +15,53 @@
         {% include "library/utils.html" %}
         <br>
         <br>
-        {% if books %}
-            <br>
 
+        {% if students %}
+            <br>
             <table class="redTable">
                 <thead>
                 <tr>
-                    <th>Book Name</th>
-                    <th>ISBN</th>
-                    <th>Author</th>
-                    <th>Category</th>
-                    <th>Request</th>
+                    <th>Name</th>
+                    <th>Enrollment</th>
+                    <th>Branch</th>
+                    <th>Requests</th>
                 </tr>
                 </thead>
                 <tfoot>
                 <tr>
-                    <td colspan="5" rowspan="4">
+                    <td colspan="4">
                         <div class="links"></div>
                     </td>
                 </tr>
                 </tfoot>
                 <tbody>
-                {% for book in books %}
+                {% for s in students %}
                     <tr>
-                        <td>{{ book.name }}</td>
-                        <td>{{ book.isbn }}</td>
-                        <td>{{ book.author }}</td>
-                        <td>{{ book.category }}</td>
+                        <td>{{ s.get_name }}</td>
+                        <td>{{ s.enrollment }}</td>
+                        <td>{{ s.branch }}</td>
                         <td>
-                            <form action="/viewbook" method="POST">
+                            <form action="/openstudentrequest" method="POST">
                                 {% csrf_token %}
-
-                                <p style="display: none"><input name="isbn" id="isbn" value={{ book.isbn }}></p>
+                                <p style="display: none"><input name="enrollment" id="enrollment"
+                                                                value={{ s.enrollment }}></p>
                                 <input class="dark-btn" style="padding: 0.1em 0.5em; font-size: 1em;"
-                                       value="remove" type="submit">
+                                       value="view" type="submit">
 
                             </form>
                         </td>
+
                     </tr>
+
                 {% endfor %}
                 </tbody>
             </table>
         {% else %}
-            <h1 class="title-zero">There is no books in library</h1>
+            <h1 class="title-zero">There is no book requests</h1>
         {% endif %}
     </div>
+
+
     <div class="row1">
         {% include "library/footer.html" %}
     </div>

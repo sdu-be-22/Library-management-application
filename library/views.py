@@ -1,4 +1,6 @@
+import re
 from datetime import date
+from random import randint
 
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import Group
@@ -10,6 +12,7 @@ import simplejson as json
 
 from librarymanagement.settings import EMAIL_HOST_USER
 from . import forms, models
+from django.contrib.auth.models import User
 
 
 def home_view(request):
@@ -53,9 +56,15 @@ def studentsignup_view(request):
     form1 = forms.StudentUserForm()
     form2 = forms.StudentExtraForm()
     mydict = {'form1': form1, 'form2': form2}
+    print(request.POST)
+    post = request.POST.copy()  # to make it mutable
+    post['enrollment'] = request.POST.get('username')
+    request.POST = post
+    print(request.POST)
     if request.method == 'POST':
         form1 = forms.StudentUserForm(request.POST)
         form2 = forms.StudentExtraForm(request.POST)
+
         if form1.is_valid() and form2.is_valid():
             user = form1.save()
             user.set_password(user.password)
@@ -87,10 +96,26 @@ def afterlogin_view(request):
 def addbook_view(request):
     form = forms.BookForm()
     if request.method == 'POST':
+        isbn = request.POST.get('isbn')
+
+        if isbn == '0':
+            isbn = str(randint(1000000000000, 9999999999999))
+            post = request.POST.copy()  # to make it mutable
+            post['isbn'] = isbn
+            request.POST = post
+            print(isbn)
 
         form = forms.BookForm(request.POST)
+
         if form.is_valid():
+            if models.Book.objects.filter(isbn=isbn):
+                return render(request, 'library/addbook.html', {'form': form, 'isbn_error': 'must be unique'})
+            elif len(isbn) != 13:
+                return render(request, 'library/addbook.html',
+                              {'form': form, 'isbn_error': 'should be 13 characters long'})
+
             form.save()
+
             return render(request, 'library/bookadded.html')
     return render(request, 'library/addbook.html', {'form': form})
 
@@ -98,45 +123,64 @@ def addbook_view(request):
 @login_required(login_url='adminlogin')
 @user_passes_test(is_admin)
 def viewbook_view(request):
+    isbn = request.POST.get('isbn')
+    if isbn:
+        if models.IssuedBook.objects.filter(isbn=isbn):
+            models.IssuedBook.objects.get(isbn=isbn).delete()
+        if models.RequestedBook.objects.filter(isbn=isbn):
+            models.RequestedBook.objects.filter(isbn=isbn).delete()
+        models.Book.objects.filter(isbn=isbn)[0].delete()
     books = models.Book.objects.all()
     return render(request, 'library/viewbook.html', {'books': books})
 
 
 @login_required(login_url='studentlogin')
 def viewbookbystudent_view(request):
-    books = models.Book.objects.all()
-    # print(request.user.id)
-    # print(request.user.username)
-    # print(models.StudentExtra.objects.all().values())
+    removeISBN = request.POST.get('remove')
+    if removeISBN:
+        print("REMOVE")
+        models.RequestedBook.objects.get(isbn=removeISBN, enrollment=request.user.id).delete()
 
-    # requested_isbns = models.StudentExtra.objects.get(id=request.user.id).requests
-    # requested_books = models.Book.objects.all()
-    # for b in requested_isbns:
-    #     books = books.exclude(isbn=b)
-    # # print(requested_isbns)
-    # print(books)
-    # requested_books = requested_books.difference(books)
-    return render(request, 'library/viewbookbystudent.html', {'books': books})
+    books = models.Book.objects.all()
+    already_requested_books = models.RequestedBook.objects.filter(enrollment=request.user.id)
+    issued_books = models.IssuedBook.objects.all()
+
+    print(f'req - {already_requested_books.values()}')
+    print(f'issued - {issued_books.values()}')
+    requested_books = models.Book.objects.all()
+    for requests in already_requested_books:
+        books = books.exclude(isbn=requests.isbn)
+
+    requested_books = requested_books.difference(books)
+
+    taken = []
+    objects_filter = models.IssuedBook.objects.filter(enrollment=request.user.username)
+    print(f'ob{objects_filter}')
+    for ib in objects_filter:
+        books = books.exclude(isbn=ib.isbn)
+        taken.append(models.Book.objects.get(isbn=ib.isbn))
+
+    print(f'taken - {taken}')
+
+    return render(request, 'library/viewbookbystudent.html',
+                  {'books': books, 'requestedbooks': requested_books, 'taken': taken})
 
 
 @login_required(login_url='adminlogin')
 @user_passes_test(is_admin)
 def issuebook_view(request):
-    form = forms.IssuedBookForm()
-    f = []
-    for e in models.IssuedBook.objects.all().values():
-        f.append(e['isbn'])
-    print("SSSSSSSSSSSSSSSs")
-    print(f)
-    if request.method == 'POST':
-        if True:
-            obj = models.IssuedBook()
-            obj.enrollment = request.POST.get('enrollment2')
-            obj.isbn = request.POST.get('isbn2')
-            obj.save()
-            return render(request, 'library/bookissued.html')
+    books = models.Book.objects.all()
+    for e in models.IssuedBook.objects.all():
+        books = books.exclude(isbn=e.isbn)
 
-    return render(request, 'library/issuebook.html', {'form': form, 'list': f})
+    if request.method == 'POST':
+        obj = models.IssuedBook()
+        obj.isbn = str(request.POST.get('isbn')).split(' | ')[1]
+        obj.enrollment = str(request.POST.get('enrollment')).split(' | ')[1]
+        obj.save()
+        return render(request, 'library/bookissued.html')
+
+    return render(request, 'library/issuebook.html', {'books': books, 'students': models.StudentExtra.objects.all()})
 
 
 @login_required(login_url='adminlogin')
@@ -165,29 +209,43 @@ def viewissuedbook_view(request):
 @login_required(login_url='adminlogin')
 @user_passes_test(is_admin)
 def viewstudent_view(request):
+    r_enrollment = request.POST.get('remove_enrollment')
+    if r_enrollment:
+        st = models.StudentExtra.objects.filter(enrollment=r_enrollment)[0]
+        issued = models.IssuedBook.objects.filter(enrollment=r_enrollment)
+        if issued:
+            issued.delete()
+        requested = models.RequestedBook.objects.filter(enrollment=st.user.id)
+        if requested:
+            requested.delete()
+        stex = models.StudentExtra.objects.filter(enrollment=r_enrollment)[0]
+        stex.delete()
+        st.delete()
+        user = User.objects.filter(username=r_enrollment)
+        user.delete()
+
     students = models.StudentExtra.objects.all()
     return render(request, 'library/viewstudent.html', {'students': students})
 
 
 @login_required(login_url='studentlogin')
 def viewissuedbookbystudent(request):
-    student = models.StudentExtra.objects.filter(user_id=request.user.id)
-    issuedbook = models.IssuedBook.objects.filter(enrollment=student[0].enrollment)
+    student = models.StudentExtra.objects.get(user_id=request.user.id)
+    issuedbook = models.IssuedBook.objects.filter(enrollment=student.enrollment)
 
     li1 = []
     li2 = []
     for ib in issuedbook:
-        books = models.Book.objects.filter(isbn=ib.isbn)
-        for book in books:
-            t = (request.user, student[0].enrollment, student[0].branch, book.name, book.author)
-            li1.append(t)
+        book = models.Book.objects.get(isbn=ib.isbn)
+        t = (request.user, student.enrollment, student.branch, book.name, book.author)
+        li1.append(t)
         issuedate = ib.issuedate
         expirydate = ib.expirydate
         issdate = f'{issuedate.day}-{issuedate.month}-{issuedate.year}'
         expdate = f'{expirydate.day}-{expirydate.month}-{expirydate.year}'
         days = (date.today() - ib.issuedate)
         fine = calc_fine(days.days)
-        li2.append((issdate, expdate, fine))
+        li2.append((issdate, expdate))
 
     return render(request, 'library/viewissuedbookbystudent.html', {'li1': li1, 'li2': li2})
 
@@ -226,4 +284,34 @@ def remove_book(request):
 
 
 def requestbook(request):
-    return HttpResponseRedirect('viewbooksbystudent')
+    request_book = models.RequestedBook()
+    request_book.isbn = request.POST.get('bookid')
+    request_book.enrollment = request.user.id
+    request_book.save()
+    return HttpResponseRedirect('viewbookbystudent')
+
+
+def student_request(request):
+    buff = models.StudentExtra.objects.all()
+    req = models.RequestedBook.objects.all()
+    students = models.StudentExtra.objects.all()
+    print(req.values())
+    for r in req:
+        buff = buff.exclude(user_id=r.enrollment)
+    students = students.difference(buff)
+    return render(request, 'library/viewstudentrequest.html', {'students': students})
+
+
+def open_std_req(request):
+    print(request.POST.get('enrollment'))
+    student = models.StudentExtra.objects.get(enrollment=request.POST.get('enrollment')).user
+    buff = models.RequestedBook.objects.filter(enrollment=student.id)
+    books = models.Book.objects.all()
+    print(buff.values())
+    requested_books = models.Book.objects.all()
+    for r in buff:
+        books = books.exclude(isbn=r.isbn)
+
+    requested_books = requested_books.difference(books)
+    print(requested_books.values())
+    return render(request, 'library/openrequests.html', {'r': requested_books, 'name': student.first_name})

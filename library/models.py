@@ -20,6 +20,11 @@ class StudentExtra(models.Model):
         return self.user.id
 
 
+class RequestedBook(models.Model):
+    enrollment = models.CharField(max_length=40)
+    isbn = models.PositiveIntegerField()
+
+
 class Book(models.Model):
     catchoice = [
         ('education', 'Education'),

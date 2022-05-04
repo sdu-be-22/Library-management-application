@@ -30,22 +30,36 @@
             <form method="post" class="">
 
                 <center><h2>ISSUE BOOK TO STUDENT</h2></center>
+                <div class="alhor">
+                    {% csrf_token %}
+                    <label>
+                         Choose student:
+                        <br>
+                        <input style="width: 20em" list="students" autocomplete="off" name="enrollment">
+                    </label>
+                    <datalist id="students">
+                        {% for st in students %}
+                            <option value="{{ st.user.first_name }} {{ st.user.last_name }} | {{ st.user.username }}"></option>
+                        {% endfor %}
+                    </datalist>
 
-                {% csrf_token %}
 
-                {% for field in form %}
-                    <div class="alhor">
-                        <div class="" style="margin: 1em">
-                            {{ field }}
-                        </div>
-                    </div>
-                {% endfor %}
-                <div style="opacity: 0" class="isbns">
-                    {% for field in list %}{{ field }} {% endfor %}
+                    <label>
+                         Choose book:
+                        <br>
+                        <input style="width: 20em" list="books" autocomplete="off" name="isbn">
+                    </label>
+                    <datalist id="books">
+                        {% for book in books %}
+                            <option value="{{ book.name }} - {{ book.author }} | {{ book.isbn }}"></option>
+                        {% endfor %}
+
+                    </datalist>
                 </div>
+
                 <div class="alhor" style="margin-top: 1em">
                     <div class="">
-                        <button type="submit" class="dark-btn">ISSUE</button>
+                        <button id="issuebtn" type="submit" class="dark-btn">ISSUE</button>
                     </div>
                 </div>
             </form>
@@ -58,18 +72,30 @@
     </div>
 </div>
 <script>
-    let isbns = document.querySelector('.isbns');
-    isbns = isbns.innerHTML.trim().split(' ')
-    console.log(isbns)
-    let selectBook = document.getElementById('id_isbn2');
-    console.log(selectBook.options);
-    for (let i = 1; i < selectBook.length; i++) {
+    let btn = document.getElementById('issuebtn');
+    let options = document.querySelectorAll("option");
+    let inps = document.querySelectorAll("input[list]");
 
-        if (isbns.includes(selectBook.options[i].value)) {
-            console.log('removed ' + selectBook.options[i].innerHTML);
-            selectBook.options[i].style.display = 'none';
-        }
+    for (let i = 0; i < inps.length; i++) {
+        inps[i].addEventListener('keydown', evt => {
+            const name = evt.key;
+
+            if (name === 'Delete') {
+                inps[i].value = '';
+            }
+
+        });
     }
+    btn.addEventListener('click', ev => {
+        for (let i = 0; i < options.length; i++) {
+            let option = options[i];
+            let buff = option.innerHTML;
+            option.innerHTML = option.value;
+            option.value = buff;
+        }
+    });
+
+
 </script>
 </body>
 </html>
