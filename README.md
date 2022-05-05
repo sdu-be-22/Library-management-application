@@ -76,6 +76,8 @@ For this project, we use Sqlite database.
 
 Website for librarians and students which  is designed to manage all the functions of a library. It helps librarian to maintain the database of new books and the books that are borrowed by students along with their due dates. And it helps students to get all information about availability of books and they also can send requests to get them. This website completely automates all your library's activities.
 
+https://django-library-app-sdu.herokuapp.com/
+
 
 ## License & copyright
 © Suleyman Demirel University
