@@ -1,10 +1,10 @@
 # Library Management System
 
-Web application written in Django framework to manage library 
+Web application written in Django framework to manage library. 
 
 ## Description of project
 
-**Library Management System** -  is designed to manage all the functions of a library. It helps librarian to maintain the database of new books and the books that are borrowed by members along with their due dates. This system completely automates all your library's activities.
+**Library Management System** -  is designed to manage all the functions of a library. It helps librarian to maintain the database of new books and the books that are borrowed by students along with their due dates. And it helps students to get all information about availability of books and they also can send requests to get them. This system completely automates all your library's activities.
 
 We made this app using [Django](https://www.djangoproject.com/)
 
@@ -19,18 +19,22 @@ We made this app using [Django](https://www.djangoproject.com/)
 
 ## Goal
 
-The mission of the Library Management System is to contribute to improving the quality of education and science by providing quality and efficient access to library and information resources, and to provide high quality service to researchers, faculty, staff and students of the university.
+The mission of the Library Management System is to help improve the quality of education and science by providing quality and efficient access to library and information resources, and to provide high quality services to researchers, faculty, staff and students of the university thereby facilitating their work. 
 
 ## What problems does our app solve?
 
-LMS is also called an automated library system. It is defined as software that has been established to manage basic housekeeping function of a library. LMS helps to provide information on any book present in the library to the user as well as staff number. It also keeps a track of book published, given in return and added to the library,
+An LMS is also called an automated library system. It is defined as software designed to manage the basic functions of a library. An LMS helps to provide information about any book available in the library to the user as well as the staff, keeps records of books published, borrowed and added to the library. And also provides the opportunity for the student to make a request online.
 
 ## Scope and Features
 
 * Library database
 * Feedback management
 * Simple, animated and beautiful design 
-* User friendly interface
+* Friendly interface
+* School, university libraries
+* Online requests
+* User authorization
+* Save user information
 
 ## Project structure
 
@@ -44,7 +48,7 @@ LMS is also called an automated library system. It is defined as software that h
 
 ## Users
 
-This app can be used by librarians who wants to automate their offline library and makes it easier to manage library.
+This application can be used by librarians who want to automate their offline library and make library management easier. It can also be used by students for online library information.
 
 ## Screenshots
 
@@ -70,7 +74,7 @@ For this project, we use Sqlite database.
 
 ## Project Demo
 
-DEMO
+Website for librarians and students which  is designed to manage all the functions of a library. It helps librarian to maintain the database of new books and the books that are borrowed by students along with their due dates. And it helps students to get all information about availability of books and they also can send requests to get them. This website completely automates all your library's activities.
 
 
 ## License & copyright
